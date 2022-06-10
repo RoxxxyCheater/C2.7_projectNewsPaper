@@ -10,11 +10,11 @@ class Author(models.Model):
         return f'{self.authors.username}'
 
     def update_rating(self):
-        postRate = self.post_set.all().aggregate(postRates=Sum('postRate')) #вернёт QuerySet постов автора 
+        postRate = self.post_set.all().aggregate(postRates=Sum('postRate'))  
         _postRate = 0
         _postRate += postRate.get('postRates')
 
-        commRate = self.authors.comment_set.all().aggregate(commRates=Sum('rateComment')) #вернёт QuerySet комментариев автора
+        commRate = self.authors.comment_set.all().aggregate(commRates=Sum('rateComment')) 
         _commRate = 0
         _commRate += commRate.get('commRates')
 
@@ -33,12 +33,12 @@ class Comment(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     rateComment = models.FloatField(default=0.0)
-    #author = models.ForeignKey(Author, on_delete=models.CASCADE)
+
     def __str__(self):
         try:
-            return self.commentPost.author.authorUser.username #self.post.author.authors.username
+            return self.commentPost.author.authorUser.username 
         except:
-            return self.commentUser.username #self.commAuthor.username
+            return self.commentUser.username 
             
     def __str__(self):
         return self.content
@@ -69,7 +69,7 @@ class Post(models.Model):
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
-    category =  models.CharField(max_length=2, choices=CATEGORY_CHOICES, default=NEWS, verbose_name='TypeNews')#связь «многие ко многим» с моделью Category (с дополнительной моделью PostCategory);
+    category =  models.CharField(max_length=2, choices=CATEGORY_CHOICES, default=NEWS, verbose_name='TypeNews')
     postCategory = models.ManyToManyField(Category, through='PostCategory', verbose_name='Category')
     title = models.CharField(max_length=100)
     content = models.TextField()
