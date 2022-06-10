@@ -77,7 +77,7 @@ class Post(models.Model):
  
 
     def __str__(self):
-        return self.title , self.content , self.postRate
+        return self.title +'.'+ '\n' + self.content + '\n'
     
 
     def like(self):
