@@ -11,3 +11,20 @@ Products
 <h1>Все товары s</h1>
 {{ news_all }}
 {% endblock content %}
+
+<!--  наследуемся от шаблона default.html, который мы создавали ещё во времена flatpages -->
+{% extends 'flatpages/default.html' %}
+ 
+<!-- Название у нас будет proudcts -->
+{% block title %}
+News
+{% endblock title %}
+ 
+{% block content %}
+    <h1>All Publications</h1>
+    {% if news %} <!-- Выводим товары только если они есть с помощью тега if -->
+        {{ news_all }}
+    {% else %} <!-- Если товаров нет, то говорим что товаров нет ;) -->
+        <h2>Not found!</h2>
+    {% endif %}
+{% endblock content %}
