@@ -1,15 +1,15 @@
 {% extends 'flatpages/default.html' %}
 
-{% load custom_filters %}
+<!-- {% load custom_filters %} -->
 
 {% block title %}
-Products
+News Page
 {% endblock title %}
  
 {% block content %}
     <h1>Все новости</h1>
     <h3>{{ news_all | length }}</h3>
-    <h5>{{ time_now|date:'d M Y' }}</h5> <!-- Здесь мы применяем фильтр date. Он очень похож на метод strftime у даты. С его помощью мы можем выводить дату в нужном нам формате -->
+    <h5>{{ time_now | date:'d M Y' }}</h5> <!-- Здесь мы применяем фильтр date. Он очень похож на метод strftime у даты. С его помощью мы можем выводить дату в нужном нам формате -->
     <h6> {{ value1 | default_if_none:"ничего" }} </h6> 
     <!-- Здесь, если в переменной value1 будет записано None, то выведется текст НИЧЕГО -->
     <!-- default_if_none не улавливает такие вещи, как пустые строки, пустые списки и т. д. Его задача отследить конкретно переменную None. Для того чтобы отлавливать пустые строки, списки и т. д. используется фильтр default, который имеет точно такой же синтаксис. -->
@@ -26,7 +26,7 @@ Products
                 <td>
                     Содержимое
                 </td>
-                <!-- <td>
+                <td>
                     Автор
                 </td>
                 <td>
@@ -34,7 +34,7 @@ Products
                 </td>
                 <td>
                     Рейтинг
-                </td> -->
+                </td>
             </tr>
             {% for news in news_all %}
                 <tr>
@@ -48,7 +48,7 @@ Products
                         | {{ news.content |truncatechars:50 | Censor:'*censored*'}}  <!--дописываем специальный фильтр, чтобы ограничить количество символов до 20. Все остальные символы превратятся в многоточие. -->
                        <!--| {{ news.content |truncatewords:5 }}  дописываем специальный фильтр, чтобы ограничить количество слов до 5. Все остальные слова превратятся в многоточие. -->
                     </td>
-                    <!-- <td>
+                    <td>
                         | {{ news.author }}
                     </td>
                     <td>
@@ -56,10 +56,35 @@ Products
                     </td>
                     <td>
                         | {{ news.postRate }}|
-                    </td> -->
+                    </td>
                 </tr>
             {% endfor %}
         </table>
+        <!-- Проверяем что поддерживается постраничный вывод -->
+        {% if is_paginated %}
+            
+            <!-- Если доступна предыдущая страница, то даём ссылку на неё и самую первую страницу -->
+            {% if page_obj.has_previous %}
+                <a href="?page=1">First</a>
+                <a href="?page={{ page_obj.previous_page_number }}"><<<</a>
+            {% endif %}
+
+            <!-- Показываем только текущую страницу и ближайшие к ней, чтобы список не тянулся и не захламлял страницу -->
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <a>{{ num }}</a>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a href="?page={{ num }}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            <!-- Если есть следующая страница, то даём ссылку на неё и на самую последнюю страницу -->
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">>>></a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+            {% endif %}
+
+        {% endif %}
     {% else %}
         <h2>Товаров нет!</h2>
     {% endif %}

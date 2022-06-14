@@ -20,9 +20,17 @@ STOP_LIST = [
 
 @register.filter(name='Censor') 
 def Censor(value, arg):
-    text = value
-    print('VALUE', value)
-    for word in text.split():
+    for word in value.split():
         if word in STOP_LIST:
-           text = text.replace(word, arg)
-    return text
+           value = value.replace(word, arg)
+    return value
+
+
+    
+#     Ban_List = [    
+#         "Новости",
+#         "lorem",
+#         "ipsum"
+#     ]
+   
+# return ' '.join('*'*len(i) if i.upper() in list(map(lambda x: x.upper(), Ban_List)) else i for i in value.split())

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     'news',
     'accounts',
+    'django_filters', # получить доступ к фильтрам в приложении.
 
     'django.contrib.sites',
     'django.contrib.flatpages',
