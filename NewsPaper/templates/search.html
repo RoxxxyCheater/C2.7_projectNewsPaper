@@ -1,23 +1,26 @@
 {% extends 'flatpages/default.html' %}
 
+{% load custom_filters %}
+
 {% block title %}
 News
 {% endblock title %}
 
 {% block content %}
     <h1>Поиск по новостям</h1>
-    <h3>{{ search | length }}</h3>
+    <h3>Всего статей: {{ search | length }}</h3>
     <h5>{{ time_now|date:'d M Y' }}</h5> <!-- Здесь мы применяем фильтр date. Он очень похож на метод strftime у даты. С его помощью мы можем выводить дату в нужном нам формате -->
-    <h6> {{ value1 | default_if_none:"ничего" }} ss</h6> 
+    <h6> {{ value1 | default_if_none:"This post not found. Correct your filter params." }}</h6> 
     <!-- Здесь, если в переменной value1 будет записано None, то выведется текст НИЧЕГО -->
     <!-- default_if_none не улавливает такие вещи, как пустые строки, пустые списки и т. д. Его задача отследить конкретно переменную None. Для того чтобы отлавливать пустые строки, списки и т. д. используется фильтр default, который имеет точно такой же синтаксис. -->
     <hr>
     
-    {% if search %} <!-- Если есть товары, то выводим таблицу с ними -->
+    <!-- {% if search %}  -->
+    <!-- Если есть товары, то выводим таблицу с ними --> 
            <!-- Перед таблицей добавим форму для поиска -->
     <form method="GET">
-            {{ filter.form }} <!-- Форму от фильтров за нас сделает Django. А вот кнопку, увы, придётся делать самому -->
-    <input type="submit" value="Найти">
+        {{ filter.form }} <!-- Форму от фильтров за нас сделает Django. А вот кнопку, увы, придётся делать самому -->
+        <input type="submit" value="Найти">
     </form>
         <table>
             <tr>
@@ -40,7 +43,7 @@ News
                     Рейтинг
                 </td>
             </tr>
-            {% for news in in filter.qs %} <!-- поменяем products на filter.qs, т.к. теперь мы забираем уже отобранную по каким-то параметрам информацию -->
+            {% for news in filter.qs %} <!-- поменяем products на filter.qs, т.к. теперь мы забираем уже отобранную по каким-то параметрам информацию -->
                 <!-- news_all %} -->
                 <tr>
                     <td>
@@ -90,4 +93,6 @@ News
             {% endif %}
          
         {% endif %}
+
+    <!-- {% endif %} -->
 {% endblock content %}
