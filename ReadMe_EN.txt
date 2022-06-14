@@ -56,3 +56,13 @@ User rating update.
 Output username and rating of the best user using sorting and returning the field of the first object.
 Display date added, author's username, rating, title and preview of the best article based on likes/dislikes for this article.
 Display all comments (date, user, rating, text) for this article.
+
+
+The new address page / news /, which contains a list of all news.
+
+All states listed in the type of match, data and the first 50 characters of the text state.
+The news is in line with the fresh freshness itself. All news / news / are displayed.
+
+Developed country page / news / <news id>. On this page, all information about the state. Name, text and date of entry in the format DAY-MESY-GOD LAS: MINUTES.
+
+Written by Censor, a filter that cites unhealthy sex in names and text states.
