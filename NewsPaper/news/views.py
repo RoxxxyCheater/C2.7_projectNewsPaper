@@ -6,8 +6,8 @@ from django.contrib.auth.models import User
 from .models import Post,Author
 from datetime import datetime
 from django.views import View # импортируем простую вьюшку
-from .filters import NewsFilter # импортируем недавно написанный фильтр
-from .forms import PostForm # импортируем недавно написанную форму
+from .filters import NewsFilter # импортируем фильтр
+from .forms import PostForm # импортируем форму
 
  
  
@@ -18,6 +18,10 @@ class PostList(ListView):
     queryset = Post.objects.order_by('-id') # По такому запросу сформируется список объектов, которые будут выводиться в представлении/если не указывать по умолчанию сработает не .order_by('-id'), а .all()
     #ordering = ['-id'] #сортировка от нового к старому
     paginate_by = 10
+    
+    def get_context_data(self, **kwargs): # забираем отфильтрованные объекты переопределяя метод get_context_data у наследуемого класса (привет, полиморфизм, мы скучали!!!)
+        context = super().get_context_data(**kwargs)
+        return context    
 
 
 class PostDetail(DetailView): # адресс в котором будет лежать информация о конкретном товаре
@@ -83,7 +87,7 @@ class PostAdd(CreateView):
 
 # дженерик для редактирования объекта
 class PostUpdateView(UpdateView):
-    template_name = 'news/post_update.html'
+    template_name = 'post_update.html'
     form_class = PostForm
  
     # метод get_object мы используем вместо queryset, чтобы получить информацию об объекте который мы собираемся редактировать
@@ -94,7 +98,7 @@ class PostUpdateView(UpdateView):
  
 # дженерик для удаления товара
 class PostDeleteView(DeleteView):
-    template_name = 'news/post_delete.html'
+    template_name = 'post_delete.html'
     queryset = Post.objects.all()
     success_url = '/news/'
  

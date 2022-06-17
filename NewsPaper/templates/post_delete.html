@@ -1,7 +1,13 @@
-{% extends 'sample_app/base.html' %}
+
+<!--  наследуемся от шаблона default.html, который мы создавали ещё во времена flatpages -->
+{% extends 'flatpages/default.html' %} 
+{% load custom_filters %}
+<!-- Название у нас будет proudcts -->
+{% block title %}
+Newsы
+{% endblock title %}
  
-{% block title %} News list {% endblock title %}
- 
+<!-- В контенте на странице мы выводим сам товар, айди которого было передано в адрес -->
 {% block content %}
 <h2>Вы действительно хотите удалить данный пост?</h2>
 <table>
@@ -50,4 +56,4 @@
 <form method="POST">
     {% csrf_token %}
     <input type="submit" value="Подтвердить удаление"></form>
-{% endblock content %} 
+{% endblock content %}
