@@ -50,6 +50,11 @@ class Comment(models.Model):
     def dislike(self):
         self.rateComment -= 1
         self.save()
+    def preview(self):
+        return self.content[:124] + '...'
+
+    def get_absolute_url(self):  # aбсолютный путь для перенаправления запроса
+        return f'/news/{self.id}'
 
 class PostCategory(models.Model):
     post = models.ForeignKey('Post', on_delete=models.CASCADE)
@@ -62,6 +67,8 @@ class Post(models.Model):
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
     NEWS = 'NW'
     ARTICLE = 'AR'
+    
+
 
     CATEGORY_CHOICES = (
         (NEWS, 'News'),
@@ -72,7 +79,7 @@ class Post(models.Model):
     category =  models.CharField(max_length=2, choices=CATEGORY_CHOICES, default=NEWS, verbose_name='TypeNews')
     postCategory = models.ManyToManyField(Category, through='PostCategory', verbose_name='Category')
     title = models.CharField(max_length=100)
-    content = models.TextField()
+    content = models.TextField(default='content')
     postRate = models.FloatField(default=0.0)
  
 
@@ -90,4 +97,6 @@ class Post(models.Model):
     def preview(self):
         return self.content[:124] + '...'
 
+    def get_absolute_url(self):  # aбсолютный путь для перенаправления запроса
+        return f'/news/{self.id}' 
     

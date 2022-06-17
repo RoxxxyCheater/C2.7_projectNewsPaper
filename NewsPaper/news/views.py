@@ -1,11 +1,14 @@
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView # импортируем класс, который говорит нам о том, что в этом представлении мы будем выводить список объектов из БД
+from django.views.generic import ListView, DetailView,CreateView,UpdateView, DeleteView # импортируем класс, который говорит нам о том, что в этом представлении мы будем выводить список объектов из БД
+from django.core.paginator import Paginator # импортируем класс, позволяющий удобно осуществлять постраничный вывод
+from django.contrib.auth.models import User
+
 from .models import Post,Author
 from datetime import datetime
 from django.views import View # импортируем простую вьюшку
-from django.core.paginator import Paginator # импортируем класс, позволяющий удобно осуществлять постраничный вывод
 from .filters import NewsFilter # импортируем недавно написанный фильтр
-from django.contrib.auth.models import User
+from .forms import PostForm # импортируем недавно написанную форму
+
  
  
 class PostList(ListView):
@@ -29,6 +32,8 @@ class Posts(ListView):
     context_object_name = 'search'
     paginate_by = 50
     ordering = ['-postRate']
+    form_class = PostForm
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # забираем отфильтрованные объекты переопределяя метод get_context_data у наследуемого класса (полиморфизм)
@@ -36,7 +41,27 @@ class Posts(ListView):
         top_rated = Author.objects.all().order_by('-rateAuthor').values('authors', 'rateAuthor')[0]
         context['value1'] = {User.objects.get(id=list(top_rated.values())[0])}, {list(top_rated.values())[1]} # добавим ещё одну пустую переменную, чтобы на её примере посмотреть работу другого фильтра
         context['filter'] = NewsFilter(self.request.GET, queryset=self.get_queryset()) # вписываем наш фильтр в контекст
+        # context['category'] = Post.category
+        # context['authors'] = Author.objects.all()
         return context
+
+    # def post(self, request, *args, **kwargs):
+    #     form = self.form_class(request.POST) # создаём новую форму, забиваем в неё данные из POST-запроса 
+    #     print(form)
+    #     if form.is_valid(): # если пользователь ввёл всё правильно и нигде не накосячил, то сохраняем новый товар
+    #         form.save()
+ 
+    #     return super().get(request, *args, **kwargs)
+    # def post(self, request, *args, **kwargs):
+    #     # берём значения для нового товара из POST-запроса отправленного на сервер
+    #     author = request.POST.get('authors') # Author = request.POST['authors']
+    #     title= request.POST.get('title')
+    #     postRate = request.POST['postRate'] 
+    #     content = request.POST.get('content')
+    #     posts = Post(author = author, title=title, postRate=postRate, content =content) # создаём новый товар и сохраняем
+        
+    #     posts.save()
+    #     return super().get(request, *args, **kwargs) # отправляем пользователя обратно на GET-запрос.
     
 class PostsView(View):
 
@@ -49,4 +74,28 @@ class PostsView(View):
             'posts': posts,
         }
         #return render(request, 'news/post_list.html', data)
-        return render(request, 'search.html', context={'search': posts})
+        return render(request, 'search.html', data)
+
+
+class PostAdd(CreateView):
+    template_name = 'add_news.html'
+    form_class = PostForm
+
+# дженерик для редактирования объекта
+class PostUpdateView(UpdateView):
+    template_name = 'news/post_update.html'
+    form_class = PostForm
+ 
+    # метод get_object мы используем вместо queryset, чтобы получить информацию об объекте который мы собираемся редактировать
+    def get_object(self, **kwargs):
+        id = self.kwargs.get('pk')
+        return Post.objects.get(pk=id)
+ 
+ 
+# дженерик для удаления товара
+class PostDeleteView(DeleteView):
+    template_name = 'news/post_delete.html'
+    queryset = Post.objects.all()
+    success_url = '/news/'
+ 
+ 
